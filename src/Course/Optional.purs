@@ -105,3 +105,8 @@ instance bindOptionalForReal :: Bind Optional where
   bind = flip bindOptional
 
 instance optionalMonad :: Monad Optional
+-- instance P.Monad Optional where
+--   (>>=) =
+--     flip bindOptional
+--   return =
+--     Full
