@@ -1,4 +1,4 @@
-module Course.ListSpec where
+module Test.ListSpec where
 
 import Prelude
 import Course.List (List(..), foldLeft, headOr, hlist, infinity, largeList, listh, take, (:.))
