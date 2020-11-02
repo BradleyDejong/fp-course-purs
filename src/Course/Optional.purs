@@ -1,7 +1,6 @@
 module Course.Optional where
 
 import Prelude
-
 import Utils.Error (error)
 
 -- | The `Optional` data type contains 0 or 1 value.
