@@ -6,6 +6,7 @@ import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class.Console (log)
 import Test.ListSpec (listSpec)
+import Course.ApplicativeSpec (spec) as A
 import Test.Spec.Reporter (consoleReporter)
 import Test.Spec.Runner (runSpec)
 
@@ -15,3 +16,4 @@ main = do
     $ runSpec [ consoleReporter ] do
         listSpec
         functorSpec
+        A.spec
