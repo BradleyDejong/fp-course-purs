@@ -25,7 +25,7 @@ spec = do
           $ \(x :: Int) ->
               pure x === ExactlyOne x
         it "Applying within ExactlyOne"
-          $ (ExactlyOne ((+) 10) <*> ExactlyOne 8)
+          $ (ExactlyOne (\x -> 10 + x) <*> ExactlyOne 8)
               `shouldEqual`
                 ExactlyOne 18
   describe "List instance"

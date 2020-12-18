@@ -14,6 +14,4 @@ main :: Effect Unit
 main = do
   launchAff_
     $ runSpec [ consoleReporter ] do
-        listSpec
-        functorSpec
         A.spec

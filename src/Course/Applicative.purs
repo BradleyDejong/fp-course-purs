@@ -2,11 +2,11 @@ module Course.Applicative where
 
 import Course.Core (error)
 import Course.ExactlyOne (ExactlyOne(..))
-import Course.Functor (class Functor)
-import Course.List (List(..))
+import Course.Functor (class Functor, map, (<$>))
+import Course.List (List(..), (:.))
 import Course.Optional (Optional(..))
 import Effect (Effect)
-import Prelude (($))
+import Prelude (const, identity, ($), (<>))
 import Prelude (map, (>>=), pure) as P
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -39,9 +39,9 @@ infixl 4 apply as <*>
 -- ExactlyOne 18
 instance exactlyOneApplicative :: Applicative ExactlyOne where
   pure :: forall a. a -> ExactlyOne a
-  pure = error "todo: Course.Applicative pure#instance ExactlyOne"
+  pure = ExactlyOne
   apply :: forall a b. ExactlyOne (a -> b) -> ExactlyOne a -> ExactlyOne b
-  apply ef ea = ExactlyOne $ error "todo: Course.Applicative (<*>)#instance ExactlyOne"
+  apply (ExactlyOne f) a = f <$> a
 
 -- | Insert into a List.
 --
@@ -51,9 +51,10 @@ instance exactlyOneApplicative :: Applicative ExactlyOne where
 -- [2,3,4,2,4,6]
 instance applicativeList :: Applicative List where
   pure :: forall a. a -> List a
-  pure = error "todo: Course.Applicative pure#instance List"
+  pure a = a :. Nil
   apply :: forall a b. List (a -> b) -> List a -> List b
-  apply lf la = Cons (error "todo: Course.Apply (<*>)#instance List") Nil
+  apply Nil l = Nil
+  apply (f :. fs) l = (f <$> l) <> apply fs l
 
 -- | Insert into an Optional.
 --
@@ -69,9 +70,10 @@ instance applicativeList :: Applicative List where
 -- Empty
 instance applicativeOptional :: Applicative Optional where
   pure :: forall a. a -> Optional a
-  pure = error "todo: Course.Applicative pure#instance Optional"
+  pure = Full
   apply :: forall a b. Optional (a -> b) -> Optional a -> Optional b
-  apply optF optA = Empty -- $ error "todo: Course.Apply (<*>)#instance Optional"
+  apply Empty _ = Empty
+  apply (Full f) a = f <$> a
 
 -- | Insert into a constant function.
 --
@@ -92,10 +94,10 @@ instance applicativeOptional :: Applicative Optional where
 --
 -- prop> \x y -> pure x y == x
 instance applicativeFunction :: Applicative ((->) t) where
-  pure :: forall a. a -> ((->) t a)
-  pure = \_ -> error "todo: Course.Applicative pure#((->) t)"
-  apply :: forall a b. ((->) t (a -> b)) -> ((->) t a) -> ((->) t b)
-  apply f1 f2 = \_ -> error "todo: Course.Apply (<*>)#instance ((->) t)"
+  pure :: forall a. a -> t -> a
+  pure = const
+  apply :: forall a b. (t -> (a -> b)) -> (t -> a) -> (t -> b)
+  apply tab ta t = tab t (ta t)
 
 -- | Apply a binary function in the environment.
 --
